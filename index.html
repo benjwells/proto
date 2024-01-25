@@ -1,1 +1,72 @@
+<html>
+<body>
+ <button id="play" style="font-size: 6vw" onclick="play()">Fire</button>
+ <label for="ang" style="font-size: 4vw" >Angle</label>
+ <input type="number" id="ang" name="ang" style="font-size: 4vw" min="0" max="90" value="30">
+ <label for="speed" style="font-size: 4vw" >Speed</label>
+ <input type="number" id="speed" name="speed" style="font-size: 4vw" min="1" max="30" value="10">
+ <br>
+ <canvas id="Canvas1" style="border: 1px solid"></canvas>
 
+<script>
+const c1 = document.getElementById("Canvas1")
+const ct1 = c1.getContext("2d")
+const direction = document.getElementById("ang")
+const initSpeed = document.getElementById("speed")
+const delay=20
+var proc,ball
+c1.width=Math.min(Math.floor(.97*window.innerWidth), Math.floor(.8*window.innerHeight) )
+c1.height=c1.width
+
+
+gen()
+
+function gen(){
+ angle=+(direction.value)
+ angle=angle*3.142/180
+ angx=Math.cos(angle)
+ angy=Math.sin(angle)
+ sp=.001*c1.height*(+(initSpeed.value))
+ ball={x: .1*c1.width, y: .65*c1.height, vx: sp*angx, vy: -sp*angy, ay: .03*sp}
+ ct1.fillStyle="lightblue"
+ ct1.fillRect(0,0,c1.width,.7*c1.height)
+ ct1.fillStyle="lightgreen"
+ ct1.fillRect(0,.7*c1.height,c1.width,.3*c1.height)
+ ct1.fillStyle="black"
+ display()
+ ct1.strokeStyle="red"
+ ct1.lineWidth=4
+ ct1.beginPath();
+ ct1.ellipse(.8*c1.width, .62*c1.height, .04*c1.width, .08*c1.height, 0, 0, 6.29);
+ ct1.stroke();
+ ct1.beginPath()
+ ct1.moveTo(ball.x,ball.y)
+ ct1.lineTo(ball.x+ 2*sp*angx, ball.y- 2*sp*angy)
+ ct1.stroke()
+}
+ 
+function play(){
+stop()
+gen()
+proc=setInterval(shoot,delay)
+}
+ 
+function stop(){
+  clearInterval(proc)
+}
+ 
+function shoot(){
+  ball.vy+=ball.ay
+  ball.y+=ball.vy
+  ball.x+=ball.vx
+  display()
+  if(ball.y>.8*c1.height){ stop() }
+}
+ 
+function display(){
+  ct1.fillRect(ball.x,ball.y,3,3)
+}
+ 
+</script>
+</body>
+</html>
